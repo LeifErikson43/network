@@ -1,0 +1,63 @@
+@keyframes post_delete {
+    0% {
+        opacity: 1;
+        height: 100%;
+        border: 1px solid black;
+        margin: 10px;
+    }
+    75% {
+        opacity: .10;
+        height: 75%;
+        border: 1px solid black;
+        margin: 10px;
+    }
+    100% {
+        opacity: 0;
+        height: 0px;
+        border: 0px;
+        margin: 0px;
+    }
+}
+
+#all_post-view, #profile_info{
+    margin: 20px;
+}
+#post_form {
+    border: 1px solid black;
+    margin: 15px;
+}
+
+#all_posts {
+    margin: 10px;
+    padding: 30px;
+}
+.each_post {
+    border: 1px solid black;
+    margin: 10px;
+    border-radius: 5px;
+    animation-name: post_delete;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+
+}
+.like_heart, .poster_name {
+    cursor: pointer;
+}
+.pagination {
+    margin: 15px
+}
+#post_time {
+    color:sienna;
+    font-size: small;
+}
+#nav_bar {
+    background-color:powderblue;
+}
+#main_div {
+    margin: 15px;
+}
+.follow_btn {
+    background-color:dodgerblue;
+    border-radius: 5px;
+}

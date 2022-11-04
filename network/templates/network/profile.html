@@ -1,0 +1,44 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div id="profile_info">
+    <h1>Profile Page for {{ name }}</h1>
+    <h3 id="followCount">{{ followers_count }} followers</h3>
+    <h3>following {{ following_count }}</h4>
+    {% if person_not_user %}
+        {% if user_is_follower %}
+            <button class="follow_btn" data-follow-action="unfollow" onclick="change_follow('{{ poster_id }}', '{{ request.user }}', this)">unfollow</button>
+        {% else %}
+            <button class="follow_btn" data-follow-action="follow" onclick="change_follow('{{ poster_id }}', '{{ request.user }}', this)">follow</button>
+        {% endif %}
+    {% endif %}
+</div>
+<div id="all_posts">
+        {% for post in person_posts %}
+            <div class="each_post" id={{post.id}}>
+                <a class=poster_name href="{% url 'profile' post.poster.id %}"><h5>{{ post.poster }}</h5></a>
+                <p>{{ post.post_txt }}</p>
+                <p id="post_time">posted: {{post.timestamp}}
+                 <div id="postLikes">
+                {% if user.is_authenticated %}
+                    {% if request.user == post.poster %}
+                        <a class="like_heart" id="like{{post.id}}" data-like-action="unlike">&#9825;</a><span id="like_num{{post.id}}">Likes {{ post.num_likes }}</span>
+                    {% else%}    
+                        {% if request.user in post.likers.all %}
+                            <a class="like_heart" id="like{{post.id}}" data-like-action="unlike" onclick="change_like('{{ post.id }}', '{{ request.user }}', this)">&#9829;</a><span id="like_num{{post.id}}">Likes {{ post.num_likes }}</span>
+                        {% else %}
+                            <a class="like_heart" id="like{{post.id}}" data-like-action="like" onclick="change_like('{{ post.id }}', '{{ request.user }}', this)">&#9825;</a><span id="like_num{{post.id}}">Likes {{ post.num_likes }}</span>
+                        {% endif %}
+
+                    {% endif %}
+                {% else %}
+                        <a class="like_heart" id="like_not_logged" href="{% url 'login' %}">&#9825;</a><span id="like_num{{post.id}}">Likes {{ post.num_likes }}</span>
+                {% endif %}
+                </div>
+            </div>
+            
+        {% endfor %}
+</div>
+{% endblock %}
+

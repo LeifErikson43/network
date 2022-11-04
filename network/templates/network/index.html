@@ -1,0 +1,77 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+    <div id="all_post_view">
+        
+        {%if user.is_authenticated%}
+        <form id="post_form">
+            <h5>New Post</h5>
+            <textarea class="form-control" id="write_post" placeholder="write post here {{user.username}}." maxlength="280px"></textarea>
+            <input id='post_submit' type="submit" class="btn btn-primary">
+        </form>
+        {%endif%}
+    
+        <div id="all_posts">
+        <h5>ALL POSTS</h5>
+        {% for post in page_obj %}
+            <div class="each_post" id={{post.id}}>
+                {% if user.is_authenticated %}
+                    <a class=poster_name href="{% url 'profile' post.poster.id %}"><h5>{{ post.poster }}</h5></a>
+                {%else%}
+                    <a class=poster_name href="{% url 'login' %}"><h5>{{ post.poster }}</h5></a>
+                {%endif%}
+                <p id="post_text{{post.id}}" style='display:block'>{{ post.post_txt }}</p>
+                <textarea id="edit_post_text{{post.id}}" style='display:none;'>{{ post.post_txt }}</textarea>
+                <button class="btn btn-primary" id="edit_post_button{{post.id}}" style='display:none;'>save</button>
+
+                <p id="post_time">posted: {{post.timestamp}}</p>
+                {% if user.is_authenticated %}
+                    {% if request.user == post.poster %}
+                        <button class="btn btn-primary" type='button' id='edit_post' onclick="edit('{{post.id}}')">Edit</button>
+                        <button class="btn btn-primary" type='button' id="delete_post" onclick="delete_post('{{post.id}}')">Delete</button>
+                    {% endif %}
+                
+                {%endif %}
+                <div id="postLikes">
+                {% if user.is_authenticated %}
+                    {% if request.user == post.poster %}
+                        <a class="like_heart" id="like{{post.id}}" data-like-action="unlike">&#9825;</a><span id="like_num{{post.id}}">Likes {{ post.num_likes }}</span>
+                    {% else%}    
+                        {% if request.user in post.likers.all %}
+                            <a class="like_heart" id="like{{post.id}}" data-like-action="unlike" onclick="change_like('{{ post.id }}', '{{ request.user }}', this)">&#9829;</a><span id="like_num{{post.id}}">Likes {{ post.num_likes }}</span>
+                        {% else %}
+                            <a class="like_heart" id="like{{post.id}}" data-like-action="like" onclick="change_like('{{ post.id }}', '{{ request.user }}', this)">&#9825;</a><span id="like_num{{post.id}}">Likes {{ post.num_likes }}</span>
+                        {% endif %}
+
+                    {% endif %}
+                {% else %}
+                        <a class="like_heart" id="like_not_logged" href="{% url 'login' %}">&#9825;</a><span id="like_num{{post.id}}">Likes {{ post.num_likes }}</span>
+                {% endif %}
+                </div>    
+            </div>    
+        {% endfor %}    
+        </div>
+        <div class="pagination">
+            <span class="step-link">
+                {% if page_obj.has_previous %}
+                    <button><a href = "?page=1">&laquo; first </a></button>
+                    <button><a href = "?page={{ page_obj.previous_page_number }}"> previous </a></button>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <button><a href="?page={{ page_obj.next_page_number }}">next</a></button>
+                    <button><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></button>
+                {% endif %}
+            </span>
+        </div>
+        
+
+    </div>
+    <div id="profile_view">
+        Profile Here
+    </div>
+{% endblock %}
